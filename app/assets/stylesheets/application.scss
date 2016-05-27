@@ -1,0 +1,91 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_tree ../../../vendor/assets/stylesheets/.
+ *= require_self
+ */
+@import "materialize";
+.on-front {
+  position: absolute;
+  z-index: 50;
+  top: 120px;
+  right: 10px;
+  width: 600px;
+  .card .card-content {
+    padding: 10px 20px;
+    .card-title {
+      line-height: 30px;
+      margin: 5px 0 25px;
+      text-indent: 15px;
+    }
+  }
+}
+
+table {
+  border-collapse: collapse;
+  margin: 12px;
+  width: calc(100% - 24px);
+  td,
+  th {
+    border: 2px solid black;
+  }
+}
+
+#zoomOut {
+  position: absolute;
+  bottom: 35px;
+  left: 15px;
+}
+
+.search_field {
+  position: absolute;
+  z-index: 50;
+  top: 0;
+  right: 10px;
+  width: 600px;
+
+  .card-content {
+    margin-bottom: 0;
+  }
+
+  form#search_form {
+    padding: 0 1.05rem 0 0;
+    .card-content {
+      padding: 20px 20px 10px 10px;
+    }
+  }
+}
+
+body,
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#map {
+  height: 100%;
+  position: fixed;
+  z-index: 1;
+}
+
+.news_filter {
+  position: absolute;
+  z-index: 10;
+  top: 30px;
+  right: 620px;
+}
+
+#allNews {
+  display: none;
+}

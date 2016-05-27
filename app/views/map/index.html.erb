@@ -1,0 +1,107 @@
+<div id="map"></div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCxV4cpVZ9j9N2bW0NlYDA61Raz-ZbUJdk&callback=initMap" async defer></script>
+<div class="card search_field row">
+  <form class="col s12" id="search_form">
+    <div class="row card-content">
+      <div class="input-field col s11">
+        <input placeholder="Введите название локации" id="search_phrase_input" name="search_phrase" type="text">
+        <label for="search_phrase_input">Поиск</label>
+      </div>
+      <input type="hidden" name="is_today" value="f" id="today_flag">
+      <input type="hidden" name="is_completed" value="f" id="completed_flag">
+      <div class="col s1">
+        <a class="btn-floating btn-large waves-effect waves-light blue" id='submit_search'>
+          <i class="material-icons">search</i>
+        </a>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="zoomOut" title="Отдалить камеру">
+  <a class="btn-floating btn-large waves-effect waves-light blue">
+    <i class="material-icons">zoom_out</i>
+  </a>
+</div>
+
+<div id="todayNews" title="Показать сегодняшние" class="news_filter">
+  <a class="btn-floating btn-large waves-effect waves-light blue">
+    <i class="material-icons">event_note</i>
+  </a>
+</div>
+
+<div id="allNews" title="Показать все" class="news_filter">
+  <a class="btn-floating btn-large waves-effect waves-light blue">
+    <i class="material-icons">panorama_wide_angle</i>
+  </a>
+</div>
+<script>
+  // Unmatchable init
+  var match = "asdasd";
+  var autocomplete;
+  function drawAtc(is_today) {
+    var atc_url = is_today
+      ? "/points/get_autocomplete_choices_today"
+      : "/points/get_autocomplete_choices_all";
+    if (autocomplete !== undefined)
+      autocomplete.destroy();
+    fetch(atc_url).then(function (result) {
+      result.json().then(function (response) {
+        autocomplete = new autoComplete({
+          selector: '#search_phrase_input',
+          minChars: 2,
+          source: function (term, suggest) {
+            term = term.toLowerCase();
+            var choices = response;
+            var matches = [];
+            for (i = 0; i < choices.length; i++)
+              if (~ choices[i].toLowerCase().indexOf(term))
+                matches.push(choices[i]);
+          suggest(matches);
+          },
+          onSelect: function (e, term, item) {
+            document.querySelector('#completed_flag').value = 't';
+            match = term;
+            document.querySelector('#search_phrase_input').classList+="valid";
+          }
+        });
+      });
+    });
+  }
+  document.getElementById('todayNews').addEventListener('click', function () {
+    drawAtc(true);
+    document.querySelector('#today_flag').value = "t";
+  });
+  document.getElementById('allNews').addEventListener('click', function () {
+    drawAtc(false);
+    document.querySelector('#today_flag').value = "f";
+  });
+  document.getElementById('search_form').addEventListener('submit', function(e) {
+    e.preventDefault();
+  });
+  document.getElementById('submit_search').addEventListener('click', function () {
+    var url = '/points/search_for_point?'
+    url += 'is_today=' + document.querySelector('#today_flag').value + '&';
+    url += 'is_completed=' + document.querySelector('#completed_flag').value + '&';
+    url += 'search_phrase=' + document.querySelector('#search_phrase_input').value;
+    fetch(url).then(function (response) {
+      response.json().then(function (object) {
+        if (object.length > 1)
+          renderPrompt(object);
+        else {
+          var marker = searchFor(object[0].uuid);
+          if (marker !== null) {
+            new google.maps.event.trigger(marker, 'click');
+          }
+        }
+      });
+    });
+  });
+  document.querySelector('#search_phrase_input').addEventListener('change', function () {
+    if (match !== this.value) {
+      document.querySelector('#completed_flag').value = "f";
+      document.querySelector('#search_phrase_input').classList.remove("valid");
+    }
+  });
+  drawAtc(false);
+</script>

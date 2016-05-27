@@ -1,0 +1,46 @@
+<div class="row">
+  <div class="col s12">
+    <div class="card white">
+      <div class="card-content black-text">
+        <span class="card-title">Страница администрирования</span>
+      </div>
+    </div>
+  </div>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th> ID статьи</th>
+      <th> Текст статьи</th>
+      <th> Имя локации</th>
+      <th> Тип локации</th>
+      <th> ID локации </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @admin_data.each do |data| %>
+      <tr>
+        <td> <%=data[0]%> </td>
+        <td> <%=data[1]%> </td>
+        <td> <%=data[2]%> </td>
+        <td> <%=data[3]%> </td>
+        <td> <%=data[4]%> </td>
+        <td>
+          <%=form_tag '/locations/delete_relationships', method: :post do%>
+            <input type="hidden" name="article_uuid" value="<%=data[0]%>">
+            <input type="hidden" name="location_uuid" value="<%=data[4]%>">
+            <input type="submit" value="Удалить связь">
+          <%end%>
+        </td>
+        <td>
+          <%=form_tag '/locations/delete_location', method: :post do%>
+            <input type="hidden" name="location_uuid" value="<%=data[4]%>">
+            <input type="submit" value="Удалить локацию">
+          <%end%>
+        </td>
+      </tr>
+    <%end%>
+  </tbody>
+</table>
