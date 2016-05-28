@@ -18,6 +18,12 @@ class LocationsController < ApplicationController
     end
   end
 
+  def summary
+    limit = params[:limit] || 10
+    @summary = $neo4j.execute_query("match (n:Article)--(m:Location) return n.body, collect(m.name) limit #{limit}")['data']
+    @summary.map!{|x| [x[0], x[1].map {|e| e.mb_chars.capitalize.to_s}.uniq]}
+  end
+
   def admin
     @admin_data = $neo4j.execute_query("match (n:Article)--(m:Location) return n.uuid, n.body, m.name, labels(m)[1], m.uuid")['data']
     @admin_data.each{|x| x[3] = match_place_type(x[3])}

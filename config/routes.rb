@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   get 'locations/admin'
   post 'locations/delete_relationships'
   post 'locations/delete_location'
-
+  get 'locations/summary'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 
